@@ -4,11 +4,11 @@ from datetime import datetime
 app = Flask(__name__)
 import pymongo
 from bson.json_util import dumps
-
+import os
 # Establish a connection to the MongoDB server
 
 # Establish a connection to the MongoDB server
-client = pymongo.MongoClient(MONGODB_URI)
+client = pymongo.MongoClient(os.environ['MONGODB_URI'])
 database = client["library"]
 collection = database["users"]
 

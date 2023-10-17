@@ -8,10 +8,9 @@ from bson.json_util import dumps
 # Establish a connection to the MongoDB server
 
 # Establish a connection to the MongoDB server
-client = pymongo.MongoClient("mongodb://yahyasaadme:#Y1a2h3y4a5@ac-8kep9r2-shard-00-00.er1hajy.mongodb.net:27017,ac-8kep9r2-shard-00-01.er1hajy.mongodb.net:27017,ac-8kep9r2-shard-00-02.er1hajy.mongodb.net:27017/?ssl=true&replicaSet=atlas-z7zirc-shard-0&authSource=admin&retryWrites=true&w=majority")
+client = pymongo.MongoClient(MONGODB_URI)
 database = client["library"]
 collection = database["users"]
-
 
 @app.route('/user/login', methods=['POST'])
 def login():
@@ -66,13 +65,12 @@ def check_user():
     try:
         id = request.json.get('id')
         user = collection.find_one({'_id':ObjectId(id)})
-        if user:
+        if user != None or user:
             return jsonify(dumps({"msg":user})), 200
         else:
-            return jsonify(msg="User not exists"), 404
+            return jsonify(dumps({"msg":"User not exists"})), 200
     except Exception as e:
-        return jsonify(msg="SMO"), 500
-
+        return jsonify(dumps({"msg":"SMO"})), 500
 
 @app.route('/user/addbook', methods=['POST'])
 def add_book():
@@ -122,6 +120,7 @@ def removebook():
 
     except Exception as e:
         return jsonify({'msg': 'SMO'}), 500
+
 @app.route('/', methods=['GET'])
 def Home():
     return '''
@@ -316,7 +315,7 @@ def Home():
       }
       const user = getCookie("library");
       if (user == null || user == undefined || user == "undefined") {
-        //window.location.replace("/user/login");
+        window.location.replace("/user/login");
       } else {
         fetch("/user/check", {
           method: "POST",
@@ -329,10 +328,14 @@ def Home():
             return e.json();
           })
           .then((e) => {
-          e = JSON.parse(e)
+          e = JSON.parse(e) 
+          console.log(e.msg)
+          console.log(e.msg != "User not exists" )
+          if (e.msg != "User not exists" || e.msg != "SMO"){
             document.getElementById("profile").innerHTML = `
               <h5 onclick="profile()" style="align-self: end; background-color: black; padding-right: 7px; padding-left: 7px; cursor: pointer;" class="p-1 text-white">${e.msg.name}</h5>
                 `;
+            }
           });
       }
       const allBooks = async () => {
@@ -556,7 +559,6 @@ def delete():
     except Exception as e:
         return jsonify({'msg': 'SMO'}), 500
 
-
 @app.route('/admin/update', methods=['POST'])
 def updatebooks():
     try:
@@ -578,7 +580,7 @@ def updatebooks():
 
     except Exception as e:
         return jsonify({'msg': 'SMO'}), 500
-@app.route('/admin', methods=['GET'])
+@app.route('/admin/yahyasaad', methods=['GET'])
 def admin():
     return '''
     <!DOCTYPE html>
@@ -720,7 +722,7 @@ def admin():
     <script>
       
       function home() {
-        window.location.replace("/admin");
+        window.location.replace("/admin/yahyasaad");
       }
       function addbookfunc(){
         window.location.replace("/admin/addbook");      
@@ -1743,7 +1745,6 @@ def admin_add_book():
     
     '''
 
-
 book_collection = database["books"]
 @app.route('/book', methods=['GET'])
 def get_books():
@@ -1777,7 +1778,6 @@ def get_genres():
     except Exception as e:
         return jsonify({'msg': 'SMO'}), 500
 
-
 @app.route('/book/bygenre', methods=['POST'])
 def get_books_by_genre():
     try:
@@ -1787,7 +1787,6 @@ def get_books_by_genre():
         return jsonify(dumps({'msg':data})), 200
     except Exception as e:
         return jsonify({'msg': 'SMO'}), 500
-
 
 if __name__ == "__main__":
     app.run()

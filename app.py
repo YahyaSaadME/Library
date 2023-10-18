@@ -289,6 +289,10 @@ def Home():
     </div>
 
     <script>
+    window.onbeforeunload = (e)=>{
+        e.preventDefault();
+        window.reload()
+    }
       const profile = () => {
         window.location.replace("/user/profile");
       };

@@ -291,7 +291,7 @@ def Home():
     <script>
     window.onbeforeunload = (e)=>{
         e.preventDefault();
-        window.reload()
+        window.location.reload()
     }
       const profile = () => {
         window.location.replace("/user/profile");
@@ -724,7 +724,10 @@ def admin():
     </div>
 
     <script>
-      
+    window.onbeforeunload = (e)=>{
+        e.preventDefault();
+        window.location.reload()
+    }
       function home() {
         window.location.replace("/admin/yahyasaad");
       }

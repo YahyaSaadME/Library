@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,make_response, jsonify
+from flask import Flask,request, jsonify
 from bson.objectid import ObjectId
 from datetime import datetime
 app = Flask(__name__)

@@ -8,11 +8,10 @@ import os
 # Establish a connection to the MongoDB server
 
 # Establish a connection to the MongoDB server
-client = pymongo.MongoClient(os.environ['MONGODB_URI'])
+client = pymongo.MongoClient("mongodb://yahyasaadme:#Y1a2h3y4a5@ac-8kep9r2-shard-00-00.er1hajy.mongodb.net:27017,ac-8kep9r2-shard-00-01.er1hajy.mongodb.net:27017,ac-8kep9r2-shard-00-02.er1hajy.mongodb.net:27017/library?ssl=true&replicaSet=atlas-z7zirc-shard-0&authSource=admin&retryWrites=true&w=majority")
 database = client["library"]
 collection = database["users"]
 book_collection = database["books"]
-
 # User GET Requests
 
 @app.route('/', methods=['GET'])
@@ -168,18 +167,11 @@ def Home():
           href="#"
           class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
         >
-          <h5
-            class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            Noteworthy technology acquisitions 2021
-          </h5>
-          <p class="font-normal text-gray-700 dark:text-gray-400">
-            Here are the biggest enterprise technology acquisitions of 2021 so
-            far, in reverse chronological order.
-          </p>
+          <center>No books</center>
         </div>
       </div>
       <div id="open"></div>
+      
     </div>
 
     <script>
@@ -227,7 +219,7 @@ def Home():
           console.log(e.msg != "User not exists" )
           if (e.msg != "User not exists" || e.msg != "SMO"){
             document.getElementById("profile").innerHTML = `
-              <h5 onclick="profile()" style="align-self: end; background-color: black; padding-right: 7px; padding-left: 7px; cursor: pointer;" class="p-1 text-white">${e.msg.name}</h5>
+              <h5 onclick="profile()" style="align-self: end; background-color: black; padding-right: 7px; padding-left: 7px; cursor: pointer;" class="p-1 text-white">${e.msg.name.slice(0,2).toUpperCase()}</h5>
                 `;
             }
           });
@@ -393,7 +385,7 @@ def Home():
                           <h5 class="mt-2 text-sm font-bold tracking-tight text-gray-500">AUTHOR</h5>
                           <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">${e.author}</h5>
                           <p class="font-normal text-gray-700 dark:text-gray-400">${e.content}</p>
-                          ${e.taken==true?"<p class='font-normal text-red-700'>Sorry this book has been already taken</p>":`<button onclick='getbook("${e.title}","${e.author}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mt-5">Get Book</button>`}
+                          <button onclick='getbook("${e.title}","${e.author}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mt-5">Add Book</button>
                           </div>
                           `;
           return;
@@ -898,7 +890,7 @@ def Profile():
             if(e.msg.mybooks.length !== 0 ){
               e.msg.mybooks.map((e, i) => {
             let today = new Date().getDate()
-            let last = new Date(e.date.$date).getDate()+2
+            let last = new Date(e.date.$date).getDate()
                 document.getElementById("nobooks").innerHTML = ""
                 document.getElementById("body").innerHTML += `
                 <a  onclick='openbook("${e.title}")' style="width:300px" href="#title=${
@@ -912,9 +904,9 @@ def Profile():
                   e.author
                 }</h5>
                 
-                <h5 class="mb-2 text-sm font-bold tracking-tight text-white" style='background-color:${(last - today) > 0 ?"green":"red"};padding:5px;text-align:end; width:fit-content'>${
-                  last - today
-                } Days left</h5>
+                <h5 class="mb-2 text-sm font-bold tracking-tight text-white" style='background-color:green;padding:5px;text-align:end; width:fit-content'>${
+                  last-today-1
+                } Days ago</h5>
                 
                 </a>
                 
@@ -967,7 +959,7 @@ def Profile():
                           <h5 class="mt-2 text-sm font-bold tracking-tight text-gray-500">AUTHOR</h5>
                           <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">${e.author}</h5>
                           <p class="font-normal text-gray-700 dark:text-gray-400">${e.content}</p>
-                          <button onclick='returnbook("${e.title}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mt-5">Return Book</button>
+                          <button onclick='returnbook("${e.title}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mt-5">Remove Book</button>
                           </div>
                           `;
          
@@ -1076,13 +1068,11 @@ def add_book():
             if len(user['mybooks']) < 3:
                 book = {'title': title, 'date': datetime.now(), 'author': author}
                 collection.update_one({'_id': ObjectId(user_id)}, {'$push': {'mybooks': book}})
-                data = book_collection.update_one({'title':title},{"$set":{'taken': True}})
                 return jsonify({'msg': 'Added'}), 200
             elif user:
                 return jsonify({'msg': '3'}), 200
         elif 'mybooks' not in user:
             collection.update_one({'_id': ObjectId(user_id)}, {'$push': {'mybooks': {'title': title, 'date': datetime.now(), 'author': author}}})
-            data = book_collection.update_one({'title': title}, {"$set": {'taken': True}})
             return jsonify({'msg': 'Added'}), 200
         else:
             return jsonify({'msg': 'Not Added'}), 404
@@ -1102,7 +1092,6 @@ def removebook():
             {'$pull': {'mybooks': {'title': title}}}
         )
         if result.modified_count > 0:
-            book_collection.update_one({'title': title}, {"$set":{'taken': False}})
             return jsonify({'msg': 'Book removed'}), 200
         else:
             return jsonify({'msg': 'Book not found or not removed'}), 404
@@ -1617,6 +1606,16 @@ def admin_add_book():
       <label
         for="message"
         class="block mb-2 mt-6 text-sm font-medium text-gray-900 dark:text-white"
+        >add new genre</label
+      >
+        <input
+        type="text"
+        id="sel-2"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      />
+      <label
+        for="message"
+        class="block mb-2 mt-6 text-sm font-medium text-gray-900 dark:text-white"
         >Your Content</label
       >
       <textarea
@@ -1635,7 +1634,7 @@ def admin_add_book():
     </div>
     <script>
           function home() {
-        window.location.replace("/admin");
+        window.location.replace("/admin/yahyasaad");
       }
       async function genre() {
         const data = await fetch("/book/genre", {
@@ -1658,9 +1657,13 @@ def admin_add_book():
       async function add() {
         const title = document.getElementById("title").value;
         const content = document.getElementById("content").value;
-        const genre = document.getElementById("sel").value;
+        let genre = document.getElementById("sel").value;
         const author = document.getElementById("author").value;
-        if (title == "" || content == "" || genre == "categ" || author == "") {
+        if (genre ==  "categ"){
+            genre = document.getElementById("sel-2").value
+        }
+        genre = genre.toUpperCase()
+        if (title == "" || content == "" || author == "") {
           document.getElementById("alert").style.display = null;
           document.getElementById("alert").innerHTML = `
             <span class="font-medium">Please fill all the details!</span> 
@@ -1674,6 +1677,7 @@ def admin_add_book():
             body: JSON.stringify({ title, content, genre,author }),
           });
           const res = await send.json();
+          console.log(res)
           if (res.msg == "SMO") {
             document.getElementById("alert").style.display = null;
             document.getElementById("alert").innerHTML = `
@@ -1708,7 +1712,7 @@ def admin_add_book_POST():
         content = data.get('content')
         author = data.get('author')
 
-        added = book_collection.insert_one({'title':title,'genre':genre,'content':content,'taken':False,'author':author})
+        added = book_collection.insert_one({'title':title,'genre':genre,'content':content,'author':author})
 
         if added.inserted_id:
             return jsonify({'msg':"Added"})

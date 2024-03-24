@@ -172,8 +172,8 @@ Género</option>
                       75
                     )}...</p>
                     <div class="mt-4">
-                    <button onclick='openbook("${e.title}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Edit</button>
-                    <button onclick='deletebook("${e._id.$oid}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Delete</button>
+                    <button onclick='openbook("${e.title}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Editar</button>
+                    <button onclick='deletebook("${e._id.$oid}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Borrar</button>
                     </div>
                     </a>
 
@@ -224,9 +224,7 @@ Género</option>
             e.msg.map((e, i) => {
               document.getElementById("body").innerHTML = "";
               document.getElementById("body").innerHTML += `
-                          <a  onclick='openbook("${e.title}")' href="#title=${
-                e.title
-              }" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                          <a  onclick='openbook("${e.title}")' class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                           <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">${
                             e.title
                           }</h5>
@@ -314,7 +312,7 @@ Género</option>
           document.getElementById("open").innerHTML = `
                     <div class='p-8'>
                         <div class="mb-6">
-                            <label for="default-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                            <label for="default-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Título</label>
                             <input type="text" value="${e.title}" id="title-${e._id.$oid}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         </div>
                         <div class="mb-6">
@@ -323,15 +321,15 @@ Género</option>
                         </select>
                         </div>
                         <div class="mb-6">
-                            <label for="default-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Author</label>
+                            <label for="default-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Autor</label>
                             <input type="text"  value="${e.author}" id="author-${e._id.$oid}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         </div>
                         <div class="mb-6">
-                            <label for="default-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Content</label>
+                            <label for="default-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Contenido</label>
                             <textarea type="text" id="content-${e._id.$oid}" rows="10" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         ${e.content}</textarea>
                         </div>                              
-                        <button type="button"  onclick='updatebook("${e._id.$oid}")' class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Update</button>
+                        <button type="button"  onclick='updatebook("${e._id.$oid}")' class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Actualizar</button>
                     </div>
                           `;
                           
@@ -357,13 +355,13 @@ Género</option>
         if(data.msg == "updated"){
         document.getElementById(`alert-2`).style.display = null
              document.getElementById(`alert-2`).innerHTML=`
-  <span class="font-medium">Updated Successfully!</span>
+  <span class="font-medium">¡Actualizado con éxito!</span>
              `
             
         }else{
         document.getElementById(`alert`).style.display = null
             document.getElementById(`alert`).innerHTML=`
-  <span class="font-medium">Not Updated </span>
+  <span class="font-medium">No actualizado!</span>
              `           
         }
       
@@ -383,19 +381,14 @@ Género</option>
           document.getElementById("alert").style.display = null;
           document.getElementById("alert").innerHTML = `
                   <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-        <span class="font-medium">Book Added successfully!</span>
+        <span class="font-medium">¡Libro agregado exitosamente!</span>
       </div>  `;
-        } else if (data.msg == "3") {
-          document.getElementById("alert").style.display = null;
-          document.getElementById("alert").innerHTML = `
-                <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-        <span class="font-medium">You can't Add more than three books</span>
-      </div> `;
+        
         } else {
           document.getElementById("alert").style.display = null;
           document.getElementById("alert").innerHTML = `
                 <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-        <span class="font-medium">Book Not Added!</span>
+        <span class="font-medium">¡Libro no agregado!</span>
       </div> `;
         }
       }
@@ -415,7 +408,7 @@ Género</option>
             document.getElementById("alert").style.display = null;
           document.getElementById("alert").innerHTML = `
                 <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-        <span class="font-medium">Book Not Deleted!</span>`
+        <span class="font-medium">¡Libro no eliminado!</span>`
         }
             
     }

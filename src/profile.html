@@ -1,0 +1,269 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+  </head>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100;300;400;500;600;700;800;900&display=swap");
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Lexend", sans-serif;
+    }
+    .search {
+      width: 100%;
+      flex-wrap: wrap;
+      display: flex;
+    }
+    .search-in-1 {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      margin: 10px 10%;
+      border-radius: 5px;
+    }
+    .search-nav {
+      margin-top: -10px;
+      /* position: fixed; */
+      background-color: white;
+    }
+    #btn {
+      border: none;
+      background-color: white;
+      outline: none;
+      margin-top: 5px;
+      margin-right: 10px;
+    }
+    .ntf {
+      width: 300px;
+      height: 300px;
+    }
+    .ntf-div {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .opt {
+      border: none;
+      outline: none;
+      border-radius: 2px;
+    }
+    .inpts {
+      padding: 10px 10px;
+      border-radius: 3px;
+      border: none;
+      font-size: 15px;
+      margin: 2px;
+      display: inline-block;
+      margin: 5px;
+      outline: none;
+    }
+    .head {
+      font-size: x-large;
+      padding-top: 20px;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+    .card {
+      padding: 15px;
+      box-shadow: 0px 0px 2px -1px black;
+    }
+  </style>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css"
+    rel="stylesheet"
+  />
+  <body>
+    <div class="p-5 flex justify-between items-center">
+      <h1
+        onclick="home()"
+        style="text-align: center; cursor: pointer;"
+        class="text-3xl font-bold tracking-tight text-gray-900"
+      >
+      wiki español
+      </h1>
+      <div id="profile">
+        <h5
+          style="
+            align-self: end;
+            background-color: black;
+            padding-right: 7px;
+            padding-left: 7px;
+            cursor: pointer;
+          "
+          class="p-1 text-white"
+        >
+          Login
+        </h5>
+      </div>
+    </div>
+
+    <div class="p-5">
+      <h5
+        class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+      >
+        Tus libros
+      </h5>
+    </div>
+
+    <div class="flex justify-center">
+      <div
+        id="body"
+        class="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        
+      </div>
+      <div id="nobooks"></div>
+      <div id="open"></div>
+    </div>
+
+    <script>
+      function getCookie(cookieName) {
+        const name = cookieName + "=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const cookieArray = decodedCookie.split(";");
+        for (let i = 0; i < cookieArray.length; i++) {
+          let cookie = cookieArray[i];
+          while (cookie.charAt(0) === " ") {
+            cookie = cookie.substring(1);
+          }
+          if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+          }
+        }
+        return null;
+      }
+      const user = getCookie("library");
+      if (user == null) {
+        window.location.replace("/user/login");
+      } else {
+        fetch("/user/check", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: user }),
+        })
+          .then((e) => {
+            return e.json();
+          })
+          .then((e) => {
+          e = JSON.parse(e)
+            document.getElementById("profile").innerHTML = `
+        <h5 onclick="logout()" style="align-self: end; background-color: black; padding-right: 7px; padding-left: 7px; cursor: pointer;" class="p-1 text-white">Cerrar sesión</h5>
+          `;
+            document.getElementById("body").style.display = null;
+            document.getElementById("open").style.display = "none";
+
+            document.getElementById("body").innerHTML = "";
+            if (e.msg.mybooks != undefined) {
+            if(e.msg.mybooks.length !== 0 ){
+              e.msg.mybooks.map((e, i) => {
+            let today = new Date().getDate()
+            let last = new Date(e.date.$date).getDate()
+                document.getElementById("nobooks").innerHTML = ""
+                document.getElementById("body").innerHTML += `
+                <a  onclick='openbook("${e.title}")' style="width:300px" href="#title=${
+                  e.title
+                }" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">${
+                  e.title
+                }</h5>
+                <h5 class="mt-2 text-sm font-bold tracking-tight text-gray-500">AUTHOR</h5>
+                <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">${
+                  e.author
+                }</h5>
+                
+                <h5 class="mb-2 text-sm font-bold tracking-tight text-white" style='background-color:green;padding:5px;text-align:end; width:fit-content'>${
+                  today-last
+                } Days ago</h5>
+                
+                </a>
+                
+                `;
+              });
+            } 
+            else {
+              document.getElementById("nobooks").innerHTML = `
+            <p class="font-normal text-gray-700 dark:text-gray-400 tecxt-center">
+            No Books Added.
+          </p>
+              `;
+            }
+            }else {
+              document.getElementById("nobooks").innerHTML = `
+            <p class="font-normal text-gray-700 dark:text-gray-400 text-center">
+            No se agregaron libros.
+          </p>
+              `;
+            }
+          });
+      }
+      function logout(){
+    const cookies = document.cookie.split('; ');
+
+     for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+          window.location.replace('/user/login')
+      }
+      
+      const openbook = async (title) => {
+        const data = await fetch("/book/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ q: title }),
+        });
+        const e = JSON.parse(await data.json());
+        document.getElementById("body").style.display = "none";
+        document.getElementById("open").style.display = null;
+        e.msg.map((e, i) => {
+          document.getElementById("open").innerHTML = `
+                      <div class='p-8'>
+                        <div class='flex justify-between'>
+                          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">${e.title}</h5>
+                          <button onclick='returnbook("${e.title}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mt-5">Remove Book</button>
+                        </div>
+                          <h5 class="mt-2 text-sm font-bold tracking-tight text-gray-500">AUTHOR</h5>
+                          <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">${e.author}</h5>
+                          <p class="font-normal text-gray-700 dark:text-gray-400 text-justify">${e.content}</p>
+                          </div>
+                          `;
+         
+        });
+      };
+      
+      async function returnbook(title) {
+          const res = await fetch("/user/removebook",{
+            method:"POST",
+            headers:{
+              'Content-Type':"application/json"
+            },
+            body:JSON.stringify({id:user,title})
+          })  
+          const data = await res.json()
+          if(data.msg == "Book removed"){
+            window.location.reload()
+          }
+
+      }
+      
+      function home() {
+        window.location.replace("/");
+      }
+    </script>
+  </body>
+</html>

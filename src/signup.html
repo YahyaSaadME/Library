@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>inscribirse</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100;300;400;500;600;700;800;900&display=swap");
+      * {
+        font-family: "Lexend", sans-serif;
+      }
+    </style>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+      "
+    >
+      <div
+        id="alert"
+        class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        role="alert"
+      >
+        <span class="font-medium">Danger alert!</span> Change a few things up
+        and try submitting again.
+      </div>
+      <div
+        class="w-full m-2 max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
+      >
+        <h5 class="text-xl font-medium text-gray-900 dark:text-white">
+          Regístrate en wiki español
+        </h5>
+        <div>
+            <label
+              for="name"
+              class="block mt-5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+            Su nombre
+            </label>
+            <input
+              type="text"
+              id="name"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+              placeholder="Ex. Maya"
+            />
+          </div>
+        <div>
+          <label
+            for="regno"
+            class="block mt-5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+          Su número de registro
+          </label>
+          <input
+            type="text"
+            id="regno"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+            placeholder="RA•••••••••"
+          />
+        </div>
+
+        <div>
+          <label
+            for="password"
+            class="block mb-2 mt-5 text-sm font-medium text-gray-900 dark:text-white"
+          >
+          Tu contraseña
+          </label>
+          <input
+            type="password"
+            id="password"
+            placeholder="••••••••"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+          />
+        </div>
+
+        <button
+          onclick="submit()"
+          class="w-full mt-5 text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+        >
+          
+crea una cuenta nueva
+        </button>
+        <div class="text-sm mt-3 font-medium text-gray-500 dark:text-gray-300">
+          
+      ¿Ya registrado?
+          <a
+            href="/user/login"
+            class="text-gray-700 hover:underline dark:text-gray-500"
+          >
+          Acceso
+          </a>
+        </div>
+      </div>
+    </div>
+    <script>
+    document.title = "Sign Up"
+      document.getElementById("alert").style.display = "none";
+      const submit = async (e) => {
+       try {
+          const res = await fetch("/user/signup", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              regno: document.getElementById("regno").value,
+              password: document.getElementById("password").value,
+              name: document.getElementById("name").value,
+            }),
+          });
+          let data =  await res.json()
+          if(data.msg.created == true ){
+                    function setCookie(cookieName, cookieValue, daysToExpire) {
+    const date = new Date();
+    date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = cookieName + "=" + cookieValue + "; " + expires + "; path=/";
+}
+                setCookie('library', data.msg._id, 7);
+                window.location.replace("/")
+          }else{
+          document.getElementById("alert").style.display = null;
+
+            document.getElementById("alert").innerHTML = `
+                <span class="font-medium">${data.msg.msg}</span>
+                `;
+          }
+        } catch (error) {
+          document.getElementById("alert").style.display = null;
+          document.getElementById("alert").innerHTML = `
+                <span class="font-medium">Something Worng</span>
+                
+                `;
+        }
+      };
+    </script>
+  </body>
+</html>

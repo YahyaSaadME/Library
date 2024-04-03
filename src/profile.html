@@ -236,7 +236,7 @@
                       <div class='p-8'>
                         <div class='flex justify-between'>
                           <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">${e.title}</h5>
-                          <button onclick='returnbook("${e.title}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mt-5">Remove Book</button>
+                          <button onclick='returnbook("${e.title}", "${e.author}")' type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 mt-5">Quitar libro</button>
                         </div>
                           <h5 class="mt-2 text-sm font-bold tracking-tight text-gray-500">AUTHOR</h5>
                           <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">${e.author}</h5>
@@ -247,15 +247,18 @@
         });
       };
       
-      async function returnbook(title) {
+      async function returnbook(title,author) {
+          console.log(title);
+          console.log(author);
           const res = await fetch("/user/removebook",{
             method:"POST",
             headers:{
               'Content-Type':"application/json"
             },
-            body:JSON.stringify({id:user,title})
+            body:JSON.stringify({id:user,title,author})
           })  
           const data = await res.json()
+          console.log(data);
           if(data.msg == "Book removed"){
             window.location.reload()
           }

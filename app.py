@@ -60,22 +60,22 @@ def signup():
         password = data.get('password')
         name = data.get('name')
 
-        if not password or not regno or not name:
-            return jsonify({"msg": "Fill in all details"})
+        if not password or not regno or not name or len(password) == 0 or len(name) == 0 :
+            return jsonify({"msg": "Completa todos los detalles"})
 
         # Check if user already exists
         user = collection.find_one({'regno':regno})
         if user!= None:
-            return jsonify({"msg": {"created": False, "msg": "User Already Exists"}})
+            return jsonify({"msg": {"created": False, "msg": "La usuario ya existe"}})
         else:
             user = collection.insert_one({"name":name,"regno":regno,"password":password})
             if user.inserted_id:
                 return jsonify({"msg": {"created": True,"name":name,"regno":regno,"password":password,"_id": str(user.inserted_id)}})
             else:
-                return jsonify({"msg": {"created": False, "msg": "SMO"}})
+                return jsonify({"msg": {"created": False, "msg": "algo salió mal"}})
 
     except Exception as e:
-        return jsonify({"msg": "SMO"}), 500
+        return jsonify({"msg": "algo salió mal"}), 500
 
 @app.route('/user/check', methods=['POST'])
 def check_user():
@@ -99,7 +99,8 @@ def add_book():
 
         user = collection.find_one({'_id': ObjectId(user_id)})
 
-        added = collection.update_one({'_id': ObjectId(user_id)}, {'$push': {'mybooks': {'title': title, 'date': datetime.now(), 'author': author}}})
+        added = collection.update_one({'_id': ObjectId(user_id)}, 
+                                      {'$push': {'mybooks': {'title': title, 'date': datetime.now(), 'author': author}}})
         if added:
           return jsonify({'msg': 'Added'}), 200
         else:
@@ -114,17 +115,20 @@ def removebook():
         data = request.get_json()
         user_id = data.get('id')
         title = data.get('title')
-
+        author = data.get('author')
+        print(author)
         result = collection.update_one(
             {'_id': ObjectId(user_id)},
-            {'$pull': {'mybooks': {'title': title}}}
+            {'$pull': {'mybooks': {'title':title,'author':author}}}
         )
+        print(result)
         if result:
             return jsonify({'msg': 'Book removed'}), 200
         else:
             return jsonify({'msg': 'Book not found or not removed'}), 404
 
     except Exception as e:
+        print(e)
         return jsonify({'msg': 'SMO'}), 500
 
 

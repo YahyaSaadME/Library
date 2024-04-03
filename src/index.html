@@ -154,6 +154,29 @@
       
     </div>
 
+<footer class="bg-gray-900 rounded-lg shadow m-4">
+  <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+    <span style="color: white;" class="text-sm text-white sm:text-center">© 2024 <a href="#" class="hover:underline">wiki español™</a>. Todos los derechos reservados.
+  </span>
+  <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+      <li>
+          <a href="#" class="hover:underline m-2 text-gray-100">
+            Acerca de</a>
+      </li>
+      <li>
+          <a href="#" class="hover:underline m-2 text-gray-100">política de privacidad
+          </a>
+      </li>
+      <li>
+          <a href="#" class="hover:underline m-2 text-gray-100">Licencia</a>
+      </li>
+      <li>
+          <a href="#" class="hover:underline m-2 text-gray-100">Contacto</a>
+      </li>
+  </ul>
+  </div>
+</footer>
+
     <script>
       const profile = () => {
         window.location.replace("/user/profile");
@@ -368,7 +391,7 @@
                             <div id="alert"></div>
                         <h5 class="mt-2 text-sm font-bold tracking-tight text-gray-500">AUTHOR</h5>
                         <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">${e.author}</h5>
-                          <p class="font-normal text-gray-700 dark:text-gray-400 text-justify">${e.content}</p>
+                          <p class="font-normal text-gray-700 dark:text-gray-400 text-justify">${ e.content.replace(/\n/g, "<br/>")}</p>
                           </div>
                           `;
           return;

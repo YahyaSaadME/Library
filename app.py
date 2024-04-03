@@ -209,8 +209,7 @@ def updatebooks():
 def get_books():
     try:
         books = list(book_collection.find({}))
-        # Convert the BSON document to JSON
-        books_json = dumps(books)
+        
         return jsonify(dumps({"msg":books})), 200
     except Exception as e:
         return jsonify({'msg': 'SMO'}), 500
